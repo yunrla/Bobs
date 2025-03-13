@@ -24,6 +24,12 @@
   color: white;
 }
 
+body {
+  background-color: #f3f3f3; /* 원하는 색상 */
+  margin: 0;
+  padding: 0;
+}
+
 .App-link {
   color: #61dafb;
 }
