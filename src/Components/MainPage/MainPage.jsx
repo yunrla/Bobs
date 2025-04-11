@@ -38,7 +38,7 @@ const Middle = styled.div`
     
 `
 const MiddleLogo= styled.div`
-    background-image:url('/img/icons8-고양이-100.png');
+    background-image:url('/img/icons-100.png');
     background-repeat: no-repeat; 
     background-size: contain;
     width: 100%; 

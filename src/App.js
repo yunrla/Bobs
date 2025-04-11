@@ -21,6 +21,7 @@ function App() {
           <Route path="/goJoin" element={<JoinPage/>}/>
           <Route path="/SuccessJoin" element={<LoginPage/>}/>
           <Route path="/goMissionList" element={<MissionList/>}/>
+          <Route path="/LoginPage" element={<LoginPage/>}/>
           
         
           

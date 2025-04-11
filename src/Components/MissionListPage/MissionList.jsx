@@ -30,6 +30,7 @@ const WriteDiaryBtn = styled.div`
     background-size:contain;
     width:70px;
     height:40px;
+    cursor: pointer;
 `
 const ViewDiaryBtn = styled.div`
     background-image:url('/img/일기장 보기.png');
@@ -38,6 +39,8 @@ const ViewDiaryBtn = styled.div`
     width:83px;
     height:40px;
     margin-left:3px;
+    cursor: pointer;
+
 `
 const CompleteMission = styled.div`
     background-image:url('/img/완료한 일.png');
@@ -46,6 +49,8 @@ const CompleteMission = styled.div`
     width:65px;
     height:40px;
     margin-top:1.5px;
+    cursor: pointer;
+
 `
 
 const PlusBtn = styled.div`
@@ -133,8 +138,25 @@ const InputField = styled.input`
     text-align: center; 
 `
 
+const DiaryInputField = styled.textarea`
+    outline: none;
+    width: 370px;
+    height: 170px;
+    background: none;
+    caret-color: #afafb0;
+    font-size: 22px;
+    border: 1px solid black;
+    margin-bottom: 8px;
+    margin-top: 115px;
+    margin-left: -10px;
+    border: none;
+    text-align: center; 
+    white-space: pre-wrap;
+    font-family: inherit;
+`
+
 const PlusMissionModal = styled.div`
-    background-image: url('/img/66.png');
+    background-image: url('/img/PlusMissionModal.png');
     width: 500px;
     height: 340px;
     background-size: contain;
@@ -143,10 +165,15 @@ const PlusMissionModal = styled.div`
     margin-left: 30px;
     cursor:text;
     align-items: center;
-    display: ${({modalStatus}) => modalStatus ? "flex" : "none"};
     flex-direction: column;
     position:fixed;
-    z-index: 1000; /* 배경보다 위에 위치 */
+    z-index: 1000; 
+
+    display : none;
+
+    &.visible {
+      display:flex;
+    }
 `
 const ModalOverlay = styled.div`
   position: fixed;
@@ -154,9 +181,16 @@ const ModalOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(93, 93, 93, 0.5); /* 배경을 검정색으로 어둡게 */
-  z-index: 999; /* 모달이 다른 내용 위에 오게 함 */
-  display: ${({modalStatus}) => modalStatus ? "block" : "none"};
+  background-color: rgba(93, 93, 93, 0.5); 
+  z-index: 999;
+  
+  /* 기본적으로 안 보이게 설정 */
+  display: none;
+
+  /* visible 클래스가 추가되면 보이도록 변경 */
+  &.visible {
+    display: block;
+  }
 
 `;
 const PlusMissonModalBtn = styled.div`
@@ -181,12 +215,40 @@ const PlusMissionModalDelete = styled.div`
     cursor:pointer;
 `
 
-function MissionList(props) {
+const PlusDiaryModal = styled.div`
+    background-image: url('/img/diaryModal.png');
+    width: 500px;
+    height: 340px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top:30px;
+    margin-left: 30px;
+    cursor:text;
+    align-items: center;
+    flex-direction: column;
+    position:fixed;
+    z-index: 1000; /* 배경보다 위에 위치 */
+    display: none;
 
+    &.visible {
+      display : flex;
+    }
+`
+
+const PlusDiaryModalDelte = styled.div`
+  
+`
+
+const PlusDiaryModalBtn = styled.div`
+  
+`
+function MissionList(props) {
   const nav = useNavigate();
   const [inputGroups, setInputGroups] = useState([]);
   const [modalStatus, setModalStatus] = useState(false);
   const [missionDetail, setMissionDetail] = useState('');
+  const [diaryModalStatus, setDiaryModalStatus] = useState(false);
+  const [diaryDetail, setDiaryDetail] = useState('');
 
   const toggleChecked = (id) => {
     setInputGroups((prevGroups) =>
@@ -196,45 +258,46 @@ function MissionList(props) {
     );
   };
 
-  const handleAddMission  = (groupId) => {
-    const mid = groupId
-
-    // 모달 닫히고
+  const handleAddMission = () => {
     setModalStatus(false);
-
-    //데이터베이스 연동
-    axios.post(`/api/addToDo/${mid}`)
-          .then(response => {
-
-          })
-          .catch()
+    setMissionDetail('');
     setInputGroups((prevGroups) => [
       ...prevGroups,
-      { id: prevGroups.length + 1, checked: false },
+      { id: prevGroups.length + 1, checked: false,  text: missionDetail  },
     ]);
   };
 
-
   const openModal = () => {
     setModalStatus(true);
-
   }
 
   const deleteModal = () => {
     setModalStatus(false);
+    setDiaryModalStatus(false);
+    setMissionDetail('');
   }
 
   const handleMission = (e) => {
-     
-      setMissionDetail(e.target.value);
+    setMissionDetail(e.target.value);
   }
-  
+
+  const openDiaryModal = () => {
+    setDiaryModalStatus(true);
+  }
+
+  const handleDiary = (e) => {
+    setDiaryDetail(e.target.value);
+  }
+
+  const addDiary = () => {
+    // 일기 추가 로직 구현 예정
+  }
 
   return (
     <Wrapper>
       <H2></H2>
       <H3>
-        <WriteDiaryBtn />
+        <WriteDiaryBtn onClick={openDiaryModal} />
         <ViewDiaryBtn />
         <CompleteMission />
       </H3>
@@ -244,22 +307,27 @@ function MissionList(props) {
           {inputGroups.map((group) => (
             <InputGroup key={group.id}>
               <Input type="checkbox" checked={group.checked} onChange={() => toggleChecked(group.id)} />
-              <Label checked={group.checked}>Mission {group.id}</Label>
+              <Label checked={group.checked}>{group.text}</Label>
             </InputGroup>
           ))}
 
           {/* 미션 추가 모달창 */}
-          <ModalOverlay modalStatus={modalStatus} />
-            <PlusMissionModal modalStatus={modalStatus}>
-              <PlusMissionModalDelete onClick={deleteModal}/>
-              <InputField type='text' onChange={handleMission} value={missionDetail} placeholder='할 일을 입력하세요.'>
-              </InputField>
-              <PlusMissonModalBtn onClick={() => handleAddMission(group.id) }/>
-            </PlusMissionModal>
+          <ModalOverlay className={modalStatus ? "visible" : ""} />
+          <PlusMissionModal className={modalStatus ? "visible" : ""}>
+            <PlusMissionModalDelete onClick={deleteModal}/>
+            <InputField type='text' onChange={handleMission} value={missionDetail}  autoFocus />
+            <PlusMissonModalBtn onClick={handleAddMission} />
+          </PlusMissionModal>
 
+          {/* 일기 쓰기 모달창 */}
+          <ModalOverlay className={diaryModalStatus ? "visible" : ""} />
+          <PlusDiaryModal className={diaryModalStatus ? "visible" : ""}>
+            <PlusDiaryModalDelte onClick={deleteModal}/>
+            <DiaryInputField type='text' onChange={handleDiary} value={diaryDetail} placeholder='오늘 고양이와 어떤 하루를 보내셨나요?' />
+            <PlusDiaryModalBtn onClick={addDiary}/>
+          </PlusDiaryModal>
         </Container>
       </AddContainer>
-
     </Wrapper>
   );
 }

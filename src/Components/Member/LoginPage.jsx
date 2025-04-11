@@ -123,7 +123,7 @@ const Button = styled.div`
 `
 
 const ButtonTxt = styled.div`
-    background-image: url('/img/출근.png');
+    background-image: url('/img/go.png');
     background-size: contain;
     background-repeat: no-repeat;
     width: 40px;
