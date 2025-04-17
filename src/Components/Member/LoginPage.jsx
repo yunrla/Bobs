@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const Wrapper = styled.div`
     display: flex;
@@ -76,7 +77,7 @@ const PwLabel = styled.div`
     margin-top: 3px;
 `
 
-const PwChangeBtn  = styled.button`
+const PwChangeBtn = styled.button`
     margin-right: 55px;
     justify-content: center; 
     align-items: center;
@@ -156,54 +157,81 @@ const InputField2 = styled.input`
 `
 
 
-function LoginPage(props) {
+function LoginPage({loginStatus}) {
     const nav = useNavigate()
+    const [userId, setUserId] = useState('');
+    const [userPw, setUserPw] = useState('');
 
-    function goPwChange(){
+    function goPwChange() {
         nav('/pwChange');
     }
 
-    function goJoin(){
+    function goJoin() {
         nav('/goJoin');
     }
 
-    function goMissionList() {
-        nav('/goMissionList');
+    function handleLoginBtn() {
+
+        const loginUser ={
+            zipsaName : userId,
+            password : userPw
+        }
+
+        axios
+            .post('/test/api/login',loginUser )
+            .then(response => {
+                console.log(response.data);
+                if (response.data === 'Login success') {
+                    loginStatus(true);
+                    nav('/LoginSuccess');
+                }
+                
+             }
+
+            )
+    }
+
+    function handleId(e) {
+        setUserId(e.target.value);
+    }
+
+    function handlePw(e) {
+        setUserPw(e.target.value);
     }
 
     return (
         <Wrapper>
-                  <h2>로그인</h2>
+            <h2>로그인</h2>
 
             <Container>
                 <LoginBox>
                     <IdBox>
-                            <IdLabel/>
-                            <WriteId>
-                                <InputField type="text"></InputField>
-                            </WriteId>
+                        <IdLabel />
+                        <WriteId>
+                            <InputField type="text" value={userId} onChange={handleId}></InputField>
+                        </WriteId>
                     </IdBox>
                     <PwBox>
-                            <PwLabel/>
-                            <WriteId>
-                                <InputField2 type="password"></InputField2>
-                            </WriteId>
+                        <PwLabel />
+                        <WriteId>
+                            <InputField2 type="password" value={userPw} name='userPw' onChange={handlePw} ></InputField2>
+                        </WriteId>
                     </PwBox>
                 </LoginBox>
 
                 <div>
-                        <PwChangeBtn onClick={goPwChange}>비밀번호 찾기/변경</PwChangeBtn>
-                        <JoinBtn onClick={goJoin}>집사 등록</JoinBtn>
-                </div> 
+                    <PwChangeBtn onClick={goPwChange}>비밀번호 찾기/변경</PwChangeBtn>
+                    <JoinBtn onClick={goJoin}>집사 등록</JoinBtn>
+                </div>
 
-                <Button onClick={goMissionList}>
+                <Button onClick={handleLoginBtn}>
                     <ButtonTxt ></ButtonTxt>
                 </Button>
-            
-            
+
+
             </Container>
         </Wrapper>
-        
+
     );
 }
 

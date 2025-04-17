@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 
 const Wrapper = styled.div`
@@ -11,7 +12,7 @@ const Wrapper = styled.div`
     padding-top:50px;
 `
 const H2 = styled.div`
-    background-image:url('/img/할 일.png');
+    background-image:url('/img/tasks.png');
     background-repeat:no-repeat;
     background-size:contain;
     width:70px;
@@ -25,7 +26,7 @@ const H3 = styled.div`
 `
 
 const WriteDiaryBtn = styled.div`
-    background-image:url('/img/일기 쓰기.png');
+    background-image:url('/img/writeDiary2.png');
     background-repeat:no-repeat;
     background-size:contain;
     width:70px;
@@ -33,7 +34,7 @@ const WriteDiaryBtn = styled.div`
     cursor: pointer;
 `
 const ViewDiaryBtn = styled.div`
-    background-image:url('/img/일기장 보기.png');
+    background-image:url('/img/viewDiary.png');
     background-repeat:no-repeat;
     background-size:contain;
     width:83px;
@@ -43,7 +44,7 @@ const ViewDiaryBtn = styled.div`
 
 `
 const CompleteMission = styled.div`
-    background-image:url('/img/완료한 일.png');
+    background-image:url('/img/completedtasks.png');
     background-repeat:no-repeat;
     background-size:contain;
     width:65px;
@@ -259,12 +260,21 @@ function MissionList(props) {
   };
 
   const handleAddMission = () => {
-    setModalStatus(false);
+    // setModalStatus(false);
+
+    // const missionData = {
+      
+      
+    // }
+    // axios
+    //   .post('/api/Mission', mission)
+
+    // setInputGroups((prevGroups) => [
+    //   ...prevGroups,
+    //   { id: prevGroups.length + 1, checked: false,  text: missionDetail  },
+    // ]);
+    
     setMissionDetail('');
-    setInputGroups((prevGroups) => [
-      ...prevGroups,
-      { id: prevGroups.length + 1, checked: false,  text: missionDetail  },
-    ]);
   };
 
   const openModal = () => {

@@ -355,9 +355,11 @@ function JoinPage(props) {
              
                  console.log("회원가입 결과", response.data);
              
-                 if (response.data === "success") {
+                 if (response.data === "Join Success") {
                    alert("회원가입 성공!");
-                   nav("/"); // 가입 후 이동 경로 지정
+                   nav("/LoginPage"); // 가입 후 이동 경로 지정
+                 }if (response.data === "emailCheckFail") {
+                    alert("이메일이 중복되었습니다.");
                  } else {
                    alert("회원가입 실패! 다시 확인해주세요.");
                  }
