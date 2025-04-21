@@ -9,6 +9,8 @@ import JoinPage from './Components/Member/JoinPage';
 import MissionList from './Components/MissionListPage/MissionList';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setMemberNo } from './store/userSlice';
 
 
 function App() {
@@ -16,17 +18,21 @@ function App() {
   const [getUser, setUser] = useState(null);
   const [loginStatus, setLoginStatus] = useState(false);
   const nav = useNavigate();
+  const dispatch = useDispatch();
 
 
   const loginUser = async () => {
     await axios.get('/test/api/user')
         .then(response => {
+          console.log(response.data.principal.member);
+          const member = response.data.principal.member; 
             if (response.data.principal.member === undefined) {
                 setUser(null);
                 return;
             }
             setUser(response.data.principal.member);
-            nav('/');
+            dispatch(setMemberNo(member.memberNo)); //Redux에 저장
+            nav('/LoginSuccess');
         });
 }
 
@@ -36,9 +42,9 @@ useEffect(() => {
 
 useEffect( () => {
   if(getUser !== null && getUser.userState !== '온라인'){
-      axios.get('/user/api/loginState?userCode=' + getUser.userCode)
+      axios.get('/api/member/loginState?memberNo=' + getUser.memberNo)
           .then((response) => {
-              console.log(response.data);
+              console.log("loginState : " + response.data);
           })
           .catch(err => console.log('update err : ' + err));
   }
@@ -51,17 +57,18 @@ return (
         <Header />
         <Routes>
           <Route path="/" element={<MainPage />} />
-          <Route path="/login" element={<LoginPage setUser={setUser} loginStatus={setLoginStatus} />} />
+          <Route path="/login" element={<LoginPage setUser={setUser} setLoginStatus={setLoginStatus} />} />
+          <Route path="/goJoin" element={<JoinPage />} />
+          <Route path="/SuccessJoin" element={<LoginPage />} />
+          <Route path="/LoginPage" element={<LoginPage />} />
+
         </Routes>
       </>
     ) : (
       <Routes>
         <Route path="/pwChange" element={<PwChange />} />
         <Route path="/finishPwChange" element={<LoginPage />} />
-        <Route path="/goJoin" element={<JoinPage />} />
-        <Route path="/SuccessJoin" element={<LoginPage />} />
         <Route path="/goMissionList" element={<MissionList />} />
-        <Route path="/LoginPage" element={<LoginPage />} />
         <Route path="/LoginSuccess" element={<MissionList />} />
       </Routes>
     )}

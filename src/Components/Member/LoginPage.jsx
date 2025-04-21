@@ -157,7 +157,7 @@ const InputField2 = styled.input`
 `
 
 
-function LoginPage({loginStatus}) {
+function LoginPage({setLoginStatus}) {
     const nav = useNavigate()
     const [userId, setUserId] = useState('');
     const [userPw, setUserPw] = useState('');
@@ -182,7 +182,7 @@ function LoginPage({loginStatus}) {
             .then(response => {
                 console.log(response.data);
                 if (response.data === 'Login success') {
-                    loginStatus(true);
+                    setLoginStatus(true);
                     nav('/LoginSuccess');
                 }
                 

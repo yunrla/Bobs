@@ -348,9 +348,19 @@ function JoinPage(props) {
 
 
 
-
     const handleJoin =  () => {
+        if (profile.catName === '' || profile.zipsaName === '' || profile.email === '' || profile.password === '' ) {
+           alert('빈 칸을을 입력해주세요');
+        }
+        else if (profile.newImage === '') {
+            setProfile(prev => ({
+    
+                ...prev,
+                newImage : '/images/defaultCat.png'
+          }))
+        }else {
          axios.post("/api/member/join", profile)
+
          .then(response =>{
              
                  console.log("회원가입 결과", response.data);
@@ -358,15 +368,21 @@ function JoinPage(props) {
                  if (response.data === "Join Success") {
                    alert("회원가입 성공!");
                    nav("/LoginPage"); // 가입 후 이동 경로 지정
-                 }if (response.data === "emailCheckFail") {
-                    alert("이메일이 중복되었습니다.");
-                 } else {
+                 }else if (response.data === "emailCheckFail") {
+                    alert("이미 존재하는 이메일입니다.");
+                 }else if (response.data === "idCheckFail") {
+                    alert("이미 존재하는 아이디입니다.");
+                 }else if (response.data === "catIdCheckFail") {
+                    alert("이미 존재하는 고양이 이름입니다.");
+                       
+                 }else {
                    alert("회원가입 실패! 다시 확인해주세요.");
                  }
 
          }
 
          ) 
+        }
        
       };
 

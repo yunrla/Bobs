@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 
 const Wrapper = styled.div`
@@ -250,6 +251,7 @@ function MissionList(props) {
   const [missionDetail, setMissionDetail] = useState('');
   const [diaryModalStatus, setDiaryModalStatus] = useState(false);
   const [diaryDetail, setDiaryDetail] = useState('');
+  const memberNo = useSelector((state) => state.user.memberNo);
 
   const toggleChecked = (id) => {
     setInputGroups((prevGroups) =>
@@ -260,21 +262,31 @@ function MissionList(props) {
   };
 
   const handleAddMission = () => {
-    // setModalStatus(false);
+    setModalStatus(false);
 
-    // const missionData = {
-      
-      
-    // }
-    // axios
-    //   .post('/api/Mission', mission)
+    setInputGroups((prevGroups) => [
+      ...prevGroups,
+      { id: prevGroups.length + 1, checked: false,  text: missionDetail  },
+    ]);
 
-    // setInputGroups((prevGroups) => [
-    //   ...prevGroups,
-    //   { id: prevGroups.length + 1, checked: false,  text: missionDetail  },
-    // ]);
+     const missionData = {
+      memberNo : memberNo,
+      mission : missionDetail
+     }
     
-    setMissionDetail('');
+    axios
+      .post('/api/mission/addMission', missionData)
+      .then(res => {
+        if (res.data === 'addMissionSuccess') {
+          console.log("미션 테이블에 저장 성공");
+        }else {
+          console.log("미션 테이블에 저장 실패");
+
+       }
+      })
+      setMissionDetail('');
+
+
   };
 
   const openModal = () => {
